@@ -13,8 +13,6 @@ def set_number():
 
 
 def init_triangle(number):
-    spaces = ""
-    stars = ""
     for i in range(number):
         spaces = " " * (number - i - 1)
         stars = "*" * (2 * i + 1)
