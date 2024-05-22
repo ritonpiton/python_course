@@ -1,5 +1,5 @@
 def is_valid_number_input(n):
-    return n.isdigit() and bool(int(n))
+    return n.isdigit()
 
 
 def set_number():
