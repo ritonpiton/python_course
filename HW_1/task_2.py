@@ -10,31 +10,28 @@ def set_number():
 
     while True:
         if is_valid_number_input(number, min_value, max_value):
-            return number
+            return int(number)
         else:
             number = input("Wrong input, please try again: ")
 
 
-def generate_text(number):
+def generate_text(number: int):
     units_words = ["", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"]
-    teens_words = ["десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать",
-             "семнадцать", "восемнадцать", "девятнадцать"]
-    tens_words = ["", "десять", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят",
-            "девяносто"]
+    teens_words = ["десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"]
+    tens_words = ["", "десять", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"]
     hundreds_words = ["", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"]
 
-    words=[]
+    words = []
 
     # разбиваем на сотни
-    hundred = int(number) // 100
+    hundred = number // 100
     # разбиваем на десятки
-    ten = (int(number) % 100) // 10
+    ten = (number % 100) // 10
     # разбиваем на единицы
-    unit = int(number) % 10
+    unit = number % 10
 
     if hundred > 0:
         words.append(hundreds_words[hundred])
-
     if ten == 1:
         words.append(teens_words[unit])
     else:
