@@ -1,0 +1,16 @@
+! nani ?
+1
+2
+3 dog
+apple
+apple
+banana
+cat 1
+cat 2
+cherry
+grape
+grapefruit
+orange
+pear
+текст на русском
+טקסט בעברית

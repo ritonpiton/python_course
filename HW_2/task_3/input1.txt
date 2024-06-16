@@ -1,0 +1,8 @@
+apple
+banana
+cherry
+pear
+1
+cat 1
+текст на русском
+! nani ?

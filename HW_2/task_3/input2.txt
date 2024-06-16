@@ -1,0 +1,8 @@
+orange
+grape
+grapefruit
+apple
+2
+cat 2
+3 dog
+טקסט בעברית
