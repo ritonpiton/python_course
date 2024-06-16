@@ -1,0 +1,11 @@
+Anton,83
+Lev,84
+Daria,85
+Alex,90
+Maria,78
+Ivan,92
+Olga,88
+InvalidLine
+Sergey,77
+Anna,     95
+Error,WrongFormat
