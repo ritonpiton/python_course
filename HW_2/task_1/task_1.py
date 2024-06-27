@@ -1,5 +1,5 @@
 def read_file():
-    # чтение данных из input.txt
+    # чтение данных из input_fin.txt
     with open('input.txt', 'r') as input_file:
         return input_file.readlines()
 
@@ -45,7 +45,7 @@ def main():
         write_file(students, average_score)
 
     except FileNotFoundError:
-        print('The file input.txt was not found')
+        print('The file input_fin.txt was not found')
 
 
 main()
