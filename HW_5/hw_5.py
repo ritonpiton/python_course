@@ -1,3 +1,6 @@
+import random
+
+
 class colors:
     BLUE = '\033[94m'
     GREEN = '\033[92m'
@@ -8,8 +11,8 @@ class colors:
 
 class Individual:
     def __init__(self, age, satiation, gender):
-        self.age = age
-        self.satiation = satiation
+        self.age = int(age)
+        self.satiation = int(satiation)
         self.gender = gender
 
 
@@ -30,6 +33,26 @@ class Animal:
             return True
         return False
 
+    def reproduce(self):
+        males = [individual for individual in self.individuals if individual.gender == 'M']
+        females = [individual for individual in self.individuals if individual.gender == 'F']
+
+        pairs = min(len(males), len(females))
+
+        for i in range(pairs):
+            male = males[i]
+            female = females[i]
+
+            if self.habitat == 'Water' and male.satiation > 50 and female.satiation > 50:
+                for _ in range(10):
+                    self.add_individual(0, 23, random.choice(['M', 'F']))
+            elif self.habitat == 'Air' and male.satiation > 42 and female.satiation > 42 and male.age > 3 and female.age > 3:
+                for _ in range(4):
+                    self.add_individual(0, 64, random.choice(['M', 'F']))
+            elif self.habitat == 'Land' and male.satiation > 20 and female.satiation > 20 and male.age > 5 and female.age > 5:
+                for _ in range(2):
+                    self.add_individual(0, 73, random.choice(['M', 'F']))
+
     def display_info(self):
         print(f'Name: {self.name}')
         print(f'Size: {self.size}')
@@ -41,6 +64,7 @@ class Animal:
             print(
                 f'  Individual {idx}: Age {individual.age} years, Satiation {individual.satiation}, Gender {individual.gender}')
         print()
+
 
 
 class Planet:
@@ -55,31 +79,40 @@ class Planet:
         for animal in self.animals:
             animal.display_info()
 
-    def find_animal_by_name(self, species_name):
+    def find_animal_by_name(self, animal_name):
         for animal in self.animals:
-            if animal.name.lower() == species_name.lower():
+            if animal.name.lower() == animal_name.lower():
                 return animal
         return None
 
     def increase_plant_food_supply(self, amount):
         if amount.isdigit():
             self.plant_food_supply += int(amount)
-            print(colors.GREEN + f'Plant food supply increased by {amount}. Current supply: {self.plant_food_supply}' + colors.END)
+            print(
+                colors.GREEN + f'Plant food supply increased by {amount}. Current supply: {self.plant_food_supply}' + colors.END)
         else:
             print(colors.RED + 'Invalid amount.' + colors.END)
 
+    def make_alive(self):
+        for animal in self.animals:
+            animal.reproduce()
+
+
+
 def main_menu(planet):
     while True:
-        print('\n1. Add individual to a species')
+        print('\n1. Add individual to a animal')
         print('2. Increase plant food supply')
-        print('3. Display current characteristics of all species')
-        print('4. Exit')
+        print('3. Display current characteristics of all animal')
+        print(colors.YELLOW + '4. Start ecosystem!' + colors.END)
+        print('5. Generate random filling of the planet')
+        print('6. Exit')
         choice = input('Enter your choice: ')
 
         match choice:
             case '1':
-                species_name = input('Enter species name: ')
-                animal: Animal = planet.find_animal_by_name(species_name)
+                animal_name = input('Enter animal name: ')
+                animal: Animal = planet.find_animal_by_name(animal_name)
 
                 if animal:
                     age = input('Enter age: ')
@@ -108,13 +141,17 @@ def main_menu(planet):
             case '3':
                 planet.display_all_animals()
             case '4':
+                planet.make_alive()
+            case '5':
+                initialize_random_animals(planet)
+            case '6':
                 exit()
             case _:
                 print(colors.RED + 'Invalid choice. Please try again.' + colors.END)
 
 
 def initialize_animals(planet):
-    animal_species = [
+    animal_animal = [
         Animal('Lion', 'L', 'Meat', 'Land', 14),
         # Animal('Elephant', 'XL', 'Plant', 'Land', 60),
         # Animal('Eagle', 'M', 'Meat', 'Air', 20),
@@ -129,8 +166,39 @@ def initialize_animals(planet):
         # Animal('Dolphin', 'M', 'Meat', 'Water', 50)
     ]
 
-    for species in animal_species:
-        planet.add_animal(species)
+    for animal in animal_animal:
+        planet.add_animal(animal)
+
+    planet.display_all_animals()
+
+
+def initialize_random_animals(planet):
+    print(colors.BLUE + 'Generating...' + colors.END)
+    
+    animal_details = [
+        {'name': 'Lion', 'size': 'L', 'diet': 'Meat', 'habitat': 'Land', 'lifespan': 14},
+        # {'name': 'Elephant', 'size': 'XL', 'diet': 'Plant', 'habitat': 'Land', 'lifespan': 60},
+        # {'name': 'Eagle', 'size': 'M', 'diet': 'Meat', 'habitat': 'Air', 'lifespan': 20},
+        # {'name': 'Shark', 'size': 'L', 'diet': 'Meat', 'habitat': 'Water', 'lifespan': 30},
+        # {'name': 'Penguin', 'size': 'M', 'diet': 'Meat', 'habitat': 'Water', 'lifespan': 20},
+        # {'name': 'Giraffe', 'size': 'L', 'diet': 'Plant', 'habitat': 'Land', 'lifespan': 25},
+        # {'name': 'Snake', 'size': 'S', 'diet': 'Meat', 'habitat': 'Land', 'lifespan': 10},
+        # {'name': 'Butterfly', 'size': 'XS', 'diet': 'Plant', 'habitat': 'Air', 'lifespan': 1},
+        # {'name': 'Bear', 'size': 'L', 'diet': 'Meat', 'habitat': 'Land', 'lifespan': 25},
+        # {'name': 'Whale', 'size': 'XL', 'diet': 'Meat', 'habitat': 'Water', 'lifespan': 90},
+        # {'name': 'Parrot', 'size': 'S', 'diet': 'Plant', 'habitat': 'Air', 'lifespan': 80},
+        # {'name': 'Dolphin', 'size': 'M', 'diet': 'Meat', 'habitat': 'Water', 'lifespan': 50}
+    ]
+
+    for details in animal_details:
+        animal = Animal(details['name'], details['size'], details['diet'], details['habitat'], details['lifespan'])
+        num_individuals = random.randint(2, 5)
+        for _ in range(num_individuals):
+            age = random.randint(6, details['lifespan'])
+            satiation = random.randint(25, 100)
+            gender = random.choice(['M', 'F'])
+            animal.add_individual(age, satiation, gender)
+        planet.add_animal(animal)
 
     planet.display_all_animals()
 
