@@ -70,7 +70,7 @@ class Animal:
 class Planet:
     def __init__(self):
         self.animals = []
-        self.plant_food_supply = 0
+        self.plant_food_supply = 1000
         self.SIZE_CONVERT = {'XS': 1, 'S': 2, 'M': 3, 'L': 4, 'XL': 5}
 
     def add_animal(self, animal):
@@ -120,27 +120,31 @@ class Planet:
                         individual.satiation = 100
                     individual.last_ate_at = move_num
 
-    def _mange_meat_animals_satiation(self, plant_animals, meat_animals, move_num):
-        for animal in meat_animals:
-            for individual in animal.individuals[:]:
-                if random.choice([0, 1]):
-                    if plant_animals:
-                        random_plant_animal = random.choice(plant_animals)
-                        if random_plant_animal.individuals:
-                            random_plant_individual = random.choice(random_plant_animal.individuals)
-                            random_plant_animal.individuals.remove(random_plant_individual)
-                            if individual.satiation <= 47:
-                                individual.satiation += 53
-                            else:
-                                individual.satiation = 100
-                            individual.last_ate_at = move_num
+    def _manage_meat_animals_satiation(self, meat_animals, move_num):
+        potential_preys = self.animals
+
+        for predator in meat_animals:
+            for individual in predator.individuals[:]:
+                if random.choice([1, 1]):
+                    if potential_preys:
+                        random_prey_animal = random.choice(potential_preys)
+                        if random_prey_animal.individuals:
+                            random_prey_individual = random.choice(random_prey_animal.individuals)
+                            if (random_prey_animal.name is not predator.name and
+                                    random_prey_animal.habitat == predator.habitat and
+                                    self.SIZE_CONVERT[random_prey_animal.size] <= self.SIZE_CONVERT[predator.size]):
+                                random_prey_animal.individuals.remove(random_prey_individual)
+                                if individual.satiation <= 47:
+                                    individual.satiation += 53
+                                else:
+                                    individual.satiation = 100
+                                individual.last_ate_at = move_num
                 else:
                     individual.satiation -= 16
 
     def _manage_not_ate_animals(self, move_num):
         for animal in self.animals:
             for individual in animal.individuals:
-                print(individual.last_ate_at, move_num)
                 if individual.last_ate_at is not move_num:
                     individual.satiation -= 9
 
@@ -162,14 +166,14 @@ class Planet:
 
         self._manage_ages_of_animals()
         self._manage_plant_animals_satiation(plant_animals, move_num)
-        self._mange_meat_animals_satiation(plant_animals, meat_animals, move_num)
+        self._manage_meat_animals_satiation(meat_animals, move_num)
         self._manage_not_ate_animals(move_num)
         self._manage_hungry_animals_population()
 
         self.display_all_animals()
 
 
-def main_menu(planet):
+def main_menu(planet, animals_details):
     move_num = 1
 
     while True:
@@ -213,7 +217,7 @@ def main_menu(planet):
             case '3':
                 planet.display_all_animals()
             case '4':
-                initialize_random_animals(planet)
+                initialize_random_animals(planet, animals_details)
             case '5':
                 planet.make_alive(move_num)
                 move_num += 1
@@ -223,54 +227,25 @@ def main_menu(planet):
                 print(colors.RED + 'Invalid choice. Please try again.' + colors.END)
 
 
-def initialize_animals(planet):
-    animal_animal = [
-        Animal('Lion', 'L', 'Meat', 'Land', 14),
-        Animal('Elephant', 'XL', 'Plant', 'Land', 60),
-        Animal('Eagle', 'M', 'Meat', 'Air', 20),
-        Animal('Shark', 'L', 'Meat', 'Water', 30),
-        Animal('Penguin', 'M', 'Meat', 'Water', 20),
-        Animal('Giraffe', 'L', 'Plant', 'Land', 25),
-        Animal('Snake', 'S', 'Meat', 'Land', 10),
-        Animal('Butterfly', 'XS', 'Plant', 'Air', 10),
-        Animal('Bear', 'L', 'Meat', 'Land', 25),
-        Animal('Whale', 'XL', 'Meat', 'Water', 90),
-        Animal('Parrot', 'S', 'Plant', 'Air', 80),
-        Animal('Dolphin', 'M', 'Meat', 'Water', 50)
-    ]
-
-    for animal in animal_animal:
+def initialize_animals(planet, animals_details):
+    for details in animals_details:
+        animal = Animal(details.name, details.size, details.diet, details.habitat, details.lifespan)
+        animal.individuals = []
         planet.add_animal(animal)
-
     planet.display_all_animals()
 
 
-def initialize_random_animals(planet):
+def initialize_random_animals(planet, animals_details):
     print(colors.BLUE + 'Generating...' + colors.END)
 
     planet.animals = []
 
-    animal_details = [
-        {'name': 'Lion', 'size': 'L', 'diet': 'Meat', 'habitat': 'Land', 'lifespan': 14},
-        {'name': 'Elephant', 'size': 'XL', 'diet': 'Plant', 'habitat': 'Land', 'lifespan': 60},
-        {'name': 'Eagle', 'size': 'M', 'diet': 'Meat', 'habitat': 'Air', 'lifespan': 20},
-        {'name': 'Shark', 'size': 'L', 'diet': 'Meat', 'habitat': 'Water', 'lifespan': 30},
-        {'name': 'Penguin', 'size': 'M', 'diet': 'Meat', 'habitat': 'Water', 'lifespan': 20},
-        {'name': 'Giraffe', 'size': 'L', 'diet': 'Plant', 'habitat': 'Land', 'lifespan': 25},
-        {'name': 'Snake', 'size': 'S', 'diet': 'Meat', 'habitat': 'Land', 'lifespan': 10},
-        {'name': 'Butterfly', 'size': 'XS', 'diet': 'Plant', 'habitat': 'Air', 'lifespan': 10},
-        {'name': 'Bear', 'size': 'L', 'diet': 'Meat', 'habitat': 'Land', 'lifespan': 25},
-        {'name': 'Whale', 'size': 'XL', 'diet': 'Meat', 'habitat': 'Water', 'lifespan': 90},
-        {'name': 'Parrot', 'size': 'S', 'diet': 'Plant', 'habitat': 'Air', 'lifespan': 80},
-        {'name': 'Dolphin', 'size': 'M', 'diet': 'Meat', 'habitat': 'Water', 'lifespan': 50}
-    ]
-
-    for details in animal_details:
-        animal = Animal(details['name'], details['size'], details['diet'], details['habitat'], details['lifespan'])
-        num_individuals = random.randint(2, 3)
+    for details in animals_details:
+        animal = Animal(details.name, details.size, details.diet, details.habitat, details.lifespan)
+        num_individuals = random.randint(0, 5)
         for _ in range(num_individuals):
-            age = random.randint(5, details['lifespan']-5)
-            satiation = random.randint(20, 100)
+            age = random.randint(0, details.lifespan)
+            satiation = random.randint(0, 100)
             gender = random.choice(['M', 'F'])
             last_ate_at = 0
             animal.add_individual(age, satiation, gender, last_ate_at)
@@ -280,9 +255,24 @@ def initialize_random_animals(planet):
 
 
 def main():
+    animals_details = [
+        Animal('Lion', 'L', 'Meat', 'Land', 14),
+        Animal('Snake', 'S', 'Meat', 'Land', 10),
+        Animal('Bear', 'L', 'Meat', 'Land', 25),
+        Animal('Gazelle', 'M', 'Plant', 'Land', 15),
+        Animal('Deer', 'M', 'Plant', 'Land', 20),
+        Animal('Eagle', 'M', 'Meat', 'Air', 20),
+        Animal('Parrot', 'S', 'Plant', 'Air', 50),
+        Animal('Falcon', 'S', 'Meat', 'Air', 15),
+        Animal('Whale', 'XL', 'Meat', 'Water', 90),
+        Animal('Shark', 'L', 'Meat', 'Water', 30),
+        Animal('Dolphin', 'M', 'Meat', 'Water', 50),
+        Animal('Fish', 'S', 'Plant', 'Water', 10)
+    ]
+
     planet = Planet()
-    initialize_animals(planet)
-    main_menu(planet)
+    initialize_animals(planet, animals_details)
+    main_menu(planet, animals_details)
 
 
 main()
